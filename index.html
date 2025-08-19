@@ -17,6 +17,81 @@
             background: linear-gradient(135deg, #F5F3F0 0%, #E8E6E3 100%);
             min-height: 100vh;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Particles for celebrations */
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            z-index: 1000;
+            border-radius: 50%;
+            animation: particleFloat 2s ease-out forwards;
+        }
+
+        .particle.sparkle {
+            background: radial-gradient(circle, gold, orange);
+            box-shadow: 0 0 6px gold;
+        }
+
+        .particle.confetti {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffd93d);
+        }
+
+        @keyframes particleFloat {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(-100px) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) scale(0.2);
+            }
+        }
+
+        /* Floating score numbers */
+        .floating-score {
+            position: absolute;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ff6b6b;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            pointer-events: none;
+            z-index: 999;
+            animation: floatUp 2s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(0.8);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-80px) scale(1.2);
+            }
+        }
+
+        /* Screen shake for genius connections */
+        .screen-shake {
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10% { transform: translateX(-5px) rotate(-1deg); }
+            20% { transform: translateX(5px) rotate(1deg); }
+            30% { transform: translateX(-5px) rotate(-1deg); }
+            40% { transform: translateX(5px) rotate(1deg); }
+            50% { transform: translateX(-5px) rotate(-1deg); }
+            60% { transform: translateX(5px) rotate(1deg); }
+            70% { transform: translateX(-5px) rotate(-1deg); }
+            80% { transform: translateX(5px) rotate(1deg); }
+            90% { transform: translateX(-5px) rotate(-1deg); }
         }
 
         /* RailBound-inspired Color Palette */
@@ -31,7 +106,7 @@
             --soft-yellow: #F2E5A2;
             --gentle-pink: #E6B3C7;
         }
- 
+
         /* Title Screen */
         #titleScreen {
             display: flex;
@@ -62,6 +137,11 @@
             background: rgba(255,255,255,0.1);
             padding: 1rem 1.5rem;
             border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .title-logo:hover {
+            transform: rotate(0deg) scale(1.05);
         }
 
         .subtitle {
@@ -96,6 +176,11 @@
             box-shadow: 6px 6px 0px var(--warm-brown);
         }
 
+        .start-btn:active {
+            transform: rotate(0deg) translateY(0px);
+            box-shadow: 2px 2px 0px var(--warm-brown);
+        }
+
         .branding {
             position: absolute;
             bottom: 20px;
@@ -115,6 +200,7 @@
             display: none;
             min-height: 100vh;
             padding: 20px;
+            position: relative;
         }
 
         .game-header {
@@ -127,12 +213,24 @@
             border-radius: 20px;
             box-shadow: 3px 3px 0px var(--warm-brown);
             border: 2px solid var(--warm-brown);
+            transition: all 0.3s ease;
         }
 
         .score-display {
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--muted-coral);
+            transition: all 0.3s ease;
+        }
+
+        .score-display.score-increase {
+            animation: scoreIncrease 0.6s ease;
+        }
+
+        @keyframes scoreIncrease {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); color: #ff6b6b; }
+            100% { transform: scale(1); }
         }
 
         .combo-display {
@@ -154,9 +252,10 @@
             padding: 0.3rem 0.6rem;
             border-radius: 10px;
             border: 2px solid var(--warm-brown);
+            transition: all 0.3s ease;
         }
 
-        /* Train Scene - Isometric Style */
+        /* Enhanced Train Scene */
         .train-scene {
             background: linear-gradient(to bottom, var(--pale-blue) 0%, var(--soft-cream) 70%, var(--primary-mint) 100%);
             border-radius: 25px;
@@ -167,9 +266,10 @@
             overflow-x: auto;
             border: 3px solid var(--warm-brown);
             box-shadow: 5px 5px 0px rgba(139, 115, 85, 0.3);
+            transition: all 0.5s ease;
         }
 
-        /* Soft cloud decorations */
+        /* Enhanced cloud decorations with animation */
         .train-scene::before {
             content: '☁️ ☁️ ☁️';
             position: absolute;
@@ -177,6 +277,12 @@
             right: 30px;
             font-size: 1.5rem;
             opacity: 0.6;
+            animation: cloudFloat 8s ease-in-out infinite;
+        }
+
+        @keyframes cloudFloat {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(20px); }
         }
 
         .train-track {
@@ -197,6 +303,12 @@
             border-radius: 6px;
             border: 2px solid #6B5D47;
             position: relative;
+            animation: railGrow 0.5s ease-in-out;
+        }
+
+        @keyframes railGrow {
+            0% { width: 0; opacity: 0; }
+            100% { width: 35px; opacity: 1; }
         }
 
         .rail-segment::after {
@@ -219,6 +331,12 @@
             position: relative;
             margin: 0 15px;
             border: 3px solid var(--warm-brown);
+            animation: tunnelAppear 0.8s ease-in-out;
+        }
+
+        @keyframes tunnelAppear {
+            0% { height: 0; opacity: 0; }
+            100% { height: 50px; opacity: 1; }
         }
 
         .tunnel::before {
@@ -230,16 +348,27 @@
             font-size: 1.8rem;
         }
 
+        /* Enhanced Train Container with smooth movement */
         .train-container {
             position: absolute;
             bottom: 85px;
             left: 50px;
             display: flex;
             align-items: flex-end;
-            transition: all 0.8s ease;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Comic book style train elements */
+        .train-container.moving {
+            animation: trainChug 2s ease-in-out;
+        }
+
+        @keyframes trainChug {
+            0%, 100% { transform: translateY(0); }
+            25% { transform: translateY(-2px); }
+            75% { transform: translateY(-1px); }
+        }
+
+        /* Enhanced train elements with better animations */
         .train-engine {
             width: 85px;
             height: 65px;
@@ -250,6 +379,12 @@
             border: 3px solid var(--warm-brown);
             box-shadow: 2px 2px 0px rgba(139, 115, 85, 0.8);
             transform: perspective(100px) rotateY(-5deg);
+            animation: engineBreathe 3s ease-in-out infinite;
+        }
+
+        @keyframes engineBreathe {
+            0%, 100% { box-shadow: 2px 2px 0px rgba(139, 115, 85, 0.8); }
+            50% { box-shadow: 4px 4px 8px rgba(139, 115, 85, 0.6); }
         }
 
         .train-engine::before {
@@ -285,17 +420,32 @@
             padding: 0.2rem;
             text-align: center;
             line-height: 1.1;
+            animation: carAttach 0.6s ease-out;
+        }
+
+        @keyframes carAttach {
+            0% {
+                opacity: 0;
+                transform: perspective(100px) rotateY(-3deg) translateX(-20px);
+            }
+            50% {
+                transform: perspective(100px) rotateY(-3deg) translateX(5px);
+            }
+            100% {
+                opacity: 1;
+                transform: perspective(100px) rotateY(-3deg) translateX(0);
+            }
         }
 
         .train-car.combo {
             background: linear-gradient(45deg, var(--primary-lavender), var(--gentle-pink));
-            animation: gentlePulse 2s infinite;
+            animation: gentlePulse 2s infinite, carAttach 0.6s ease-out;
             border-color: var(--muted-coral);
         }
 
         .train-car.genius {
             background: linear-gradient(45deg, var(--soft-yellow), var(--primary-peach));
-            animation: geniusGlow 1.5s infinite;
+            animation: geniusGlow 1.5s infinite, carAttach 0.6s ease-out;
             border-color: gold;
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 2px 2px 0px rgba(139, 115, 85, 0.8);
         }
@@ -306,8 +456,14 @@
         }
 
         @keyframes geniusGlow {
-            0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 2px 2px 0px rgba(139, 115, 85, 0.8); }
-            50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 2px 2px 0px rgba(139, 115, 85, 0.8); }
+            0%, 100% { 
+                box-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 2px 2px 0px rgba(139, 115, 85, 0.8);
+                transform: perspective(100px) rotateY(-3deg) scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 2px 2px 0px rgba(139, 115, 85, 0.8);
+                transform: perspective(100px) rotateY(-3deg) scale(1.08);
+            }
         }
 
         .train-caboose {
@@ -330,7 +486,7 @@
             font-size: 1.7rem;
         }
 
-        /* Game Controls - Comic Book Style */
+        /* Enhanced Game Controls */
         .game-controls {
             background: var(--soft-cream);
             padding: 2rem;
@@ -338,6 +494,7 @@
             border: 3px solid var(--warm-brown);
             box-shadow: 5px 5px 0px rgba(139, 115, 85, 0.3);
             margin-bottom: 2rem;
+            transition: all 0.3s ease;
         }
 
         .current-word {
@@ -361,6 +518,7 @@
             border-radius: 15px;
             border: 2px solid var(--warm-brown);
             display: inline-block;
+            transition: all 0.3s ease;
         }
 
         .scoring-hint {
@@ -392,11 +550,13 @@
             background: rgba(255,255,255,0.9);
             color: var(--warm-brown);
             box-shadow: inset 2px 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
 
         #wordInput:focus {
             border-color: var(--muted-coral);
             box-shadow: 0 0 8px rgba(244, 165, 122, 0.4), inset 2px 2px 4px rgba(0,0,0,0.1);
+            transform: scale(1.02);
         }
 
         .submit-btn {
@@ -416,6 +576,11 @@
         .submit-btn:hover {
             transform: translateY(-1px);
             box-shadow: 4px 4px 0px var(--warm-brown);
+        }
+
+        .submit-btn:active {
+            transform: translateY(1px);
+            box-shadow: 1px 1px 0px var(--warm-brown);
         }
 
         .submit-btn:disabled {
@@ -450,6 +615,11 @@
             box-shadow: 3px 3px 0px rgba(139, 115, 85, 0.6);
         }
 
+        .action-btn:active {
+            transform: translateY(1px);
+            box-shadow: 1px 1px 0px rgba(139, 115, 85, 0.6);
+        }
+
         .action-btn:disabled {
             background: #ddd;
             color: #888;
@@ -457,7 +627,7 @@
             transform: none;
         }
 
-        /* Feedback Messages */
+        /* Enhanced Feedback Messages */
         .feedback-message {
             background: var(--primary-mint);
             color: var(--warm-brown);
@@ -467,8 +637,21 @@
             margin-bottom: 1rem;
             text-align: center;
             font-weight: 700;
-            animation: fadeIn 0.5s ease;
+            animation: feedbackSlide 0.5s ease;
             box-shadow: 2px 2px 0px rgba(139, 115, 85, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes feedbackSlide {
+            0% { 
+                opacity: 0; 
+                transform: translateY(-20px) scale(0.9); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
         }
 
         .feedback-message.success {
@@ -479,6 +662,12 @@
             background: linear-gradient(135deg, gold, var(--soft-yellow));
             color: var(--warm-brown);
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.3), 2px 2px 0px rgba(139, 115, 85, 0.4);
+            animation: feedbackSlide 0.5s ease, geniusPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes geniusPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
 
         .feedback-message.suggestion {
@@ -509,12 +698,7 @@
             box-shadow: 2px 2px 0px rgba(139, 115, 85, 0.6);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Modal - Comic Book Style */
+        /* Enhanced Modal */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -524,6 +708,12 @@
             bottom: 0;
             background: rgba(0,0,0,0.5);
             z-index: 1000;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
         }
 
         .modal {
@@ -539,6 +729,18 @@
             max-width: 500px;
             width: 90%;
             text-align: center;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            0% { 
+                transform: translate(-50%, -50%) scale(0.7); 
+                opacity: 0; 
+            }
+            100% { 
+                transform: translate(-50%, -50%) scale(1); 
+                opacity: 1; 
+            }
         }
 
         .modal h3 {
@@ -555,9 +757,15 @@
             border-radius: 15px;
             outline: none;
             color: var(--warm-brown);
+            transition: all 0.3s ease;
         }
 
-        /* Game Over Screen */
+        #explanationInput:focus {
+            border-color: var(--muted-coral);
+            box-shadow: 0 0 8px rgba(244, 165, 122, 0.4);
+        }
+
+        /* Enhanced Game Over Screen */
         .game-over {
             display: none;
             text-align: center;
@@ -567,18 +775,30 @@
             border: 4px solid var(--warm-brown);
             box-shadow: 6px 6px 0px rgba(139, 115, 85, 0.4);
             margin: 2rem 0;
+            animation: gameOverSlide 0.5s ease;
+        }
+
+        @keyframes gameOverSlide {
+            0% { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
         }
 
         .crash-animation {
             font-size: 4rem;
             margin-bottom: 1rem;
-            animation: comicShake 0.6s ease-in-out;
+            animation: celebrationBounce 0.8s ease-in-out;
         }
 
-        @keyframes comicShake {
-            0%, 100% { transform: translateX(0) rotate(0deg); }
-            25% { transform: translateX(-8px) rotate(-3deg); }
-            75% { transform: translateX(8px) rotate(3deg); }
+        @keyframes celebrationBounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(-5deg); }
+            75% { transform: translateY(-5px) rotate(5deg); }
         }
 
         .final-stats {
@@ -589,6 +809,11 @@
             font-size: 1.1rem;
             margin: 0.5rem 0;
             color: var(--warm-brown);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.05);
         }
 
         .stat-value {
@@ -596,7 +821,7 @@
             color: var(--muted-coral);
         }
 
-        /* Leaderboard */
+        /* Enhanced Leaderboard */
         .leaderboard {
             background: var(--soft-cream);
             padding: 2rem;
@@ -604,6 +829,18 @@
             border: 3px solid var(--warm-brown);
             box-shadow: 5px 5px 0px rgba(139, 115, 85, 0.3);
             margin-top: 2rem;
+            animation: leaderboardSlide 0.5s ease;
+        }
+
+        @keyframes leaderboardSlide {
+            0% { 
+                opacity: 0; 
+                transform: translateX(-20px); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
         }
 
         .leaderboard h3 {
@@ -629,6 +866,24 @@
             border: 2px solid var(--warm-brown);
             font-weight: 700;
             box-shadow: 2px 2px 0px rgba(139, 115, 85, 0.4);
+            transition: all 0.3s ease;
+            animation: leaderboardItemSlide 0.5s ease;
+        }
+
+        @keyframes leaderboardItemSlide {
+            0% { 
+                opacity: 0; 
+                transform: translateX(-10px); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+
+        .leaderboard-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0px rgba(139, 115, 85, 0.4);
         }
 
         .leaderboard-rank {
@@ -640,17 +895,17 @@
             font-size: 1rem;
         }
 
-        /* Background transitions */
+        /* Enhanced Background transitions */
         .bg-day {
             background: linear-gradient(to bottom, var(--pale-blue) 0%, var(--soft-cream) 70%, var(--primary-mint) 100%);
         }
 
-        .bg-city {
-            background: linear-gradient(to bottom, var(--primary-peach) 0%, var(--soft-cream) 50%, var(--primary-lavender) 100%);
+        .bg-sunset {
+            background: linear-gradient(to bottom, #FFB347 0%, #FF8C69 30%, var(--soft-cream) 70%, var(--primary-peach) 100%);
         }
 
         .bg-night {
-            background: linear-gradient(to bottom, #6B5B95 0%, var(--primary-lavender) 50%, var(--soft-cream) 100%);
+            background: linear-gradient(to bottom, #2C3E50 0%, #3498DB 30%, var(--primary-lavender) 60%, var(--soft-cream) 100%);
         }
 
         /* Loading indicator */
@@ -664,7 +919,7 @@
             40% { opacity: 1; }
         }
 
-        /* Responsive Design */
+        /* Enhanced Responsive Design */
         @media (max-width: 768px) {
             .title-logo {
                 font-size: 2.8rem;
@@ -676,6 +931,7 @@
             
             .input-section {
                 flex-direction: column;
+                gap: 0.5rem;
             }
             
             #wordInput {
@@ -687,6 +943,95 @@
                 min-width: 60px;
                 max-width: 80px;
             }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-btn {
+                width: 80%;
+                max-width: 200px;
+            }
+
+            .game-header {
+                flex-direction: column;
+                gap: 0.5rem;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .train-scene {
+                padding: 1rem;
+                min-height: 180px;
+            }
+
+            .game-controls {
+                padding: 1rem;
+            }
+
+            .modal {
+                padding: 1rem;
+                margin: 20px;
+                width: calc(100% - 40px);
+            }
+        }
+
+        /* Word History Sidebar */
+        .word-history {
+            position: fixed;
+            right: -300px;
+            top: 20px;
+            bottom: 20px;
+            width: 280px;
+            background: var(--soft-cream);
+            border: 3px solid var(--warm-brown);
+            border-radius: 20px;
+            padding: 1rem;
+            box-shadow: 5px 5px 0px rgba(139, 115, 85, 0.3);
+            transition: all 0.3s ease;
+            z-index: 500;
+            overflow-y: auto;
+        }
+
+        .word-history.open {
+            right: 20px;
+        }
+
+        .word-history h3 {
+            color: var(--muted-coral);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .history-item {
+            background: var(--pale-blue);
+            border: 2px solid var(--warm-brown);
+            border-radius: 10px;
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .history-toggle {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-mint);
+            border: 2px solid var(--warm-brown);
+            border-radius: 10px 0 0 10px;
+            padding: 0.5rem;
+            cursor: pointer;
+            z-index: 501;
+            transition: all 0.3s ease;
+        }
+
+        .history-toggle:hover {
+            background: var(--primary-lavender);
         }
     </style>
 </head>
@@ -694,7 +1039,7 @@
     <!-- Title Screen -->
     <div id="titleScreen">
         <div class="title-logo">🚂 WORD TRAIN</div>
-        <div class="subtitle">Multi-word phrases • Never crashes • Always learn!</div>
+        <div class="subtitle">Multi-word phrases • AI-powered • Never crashes • Always learn!</div>
         
         <div style="margin: 1rem 0;">
             <button class="start-btn" onclick="startGame('classic')">🎮 Classic Mode</button>
@@ -702,11 +1047,12 @@
         </div>
         
         <div style="font-size: 0.9rem; color: var(--warm-brown); margin-top: 1rem; background: rgba(255,255,255,0.7); padding: 0.8rem; border-radius: 10px; max-width: 500px;">
-            <strong>New Features:</strong><br>
-            ✅ Multi-word phrases (Harry Potter, Black Hole)<br>
-            ✅ Spell suggestions (Ygdrasil → Yggdrasil)<br>
-            ✅ Never crashes - always explain option!<br>
-            ✅ Cultural references = big points! 🌟
+            <strong>Enhanced Features:</strong><br>
+            ✨ Claude AI judges your creativity<br>
+            🎊 Particle effects for genius connections<br>
+            🚂 Smooth train animations<br>
+            🔊 Sound effects and haptic feedback<br>
+            📱 Perfect mobile experience
         </div>
         
         <div class="branding">239 GAMES</div>
@@ -717,7 +1063,7 @@
         <div class="game-header">
             <div class="score-display">Score: <span id="currentScore">0</span></div>
             <div class="combo-display">Combo: <span id="comboMultiplier">1x</span></div>
-            <div class="ai-status" id="aiStatus">🤖 Smart Judge</div>
+            <div class="ai-status" id="aiStatus">🤖 Claude AI</div>
             <div class="timer-display" id="timerDisplay" style="display: none;">Time: <span id="timeLeft">5</span>s</div>
         </div>
 
@@ -736,7 +1082,7 @@
             </div>
 
             <div class="scoring-hint">
-                💡 Try multi-word phrases! "Grim Reaper", "Harry Potter", "Black Hole"
+                💡 Try multi-word phrases! "Grim Reaper", "Harry Potter", "Black Hole" - AI loves creativity!
             </div>
 
             <div id="feedbackContainer"></div>
@@ -747,7 +1093,9 @@
             </div>
 
             <div class="action-buttons">
+                <button class="action-btn" id="aiToggleBtn" onclick="toggleAI()">🤖 AI: ON</button>
                 <button class="action-btn" id="switchTracksBtn" onclick="switchTracks()">🔄 Switch Tracks (10 pts)</button>
+                <button class="action-btn" onclick="toggleHistory()">📜 History</button>
                 <button class="action-btn" onclick="newGame()">🆕 New Game</button>
                 <button class="action-btn" onclick="showLeaderboard()">🏆 Leaderboard</button>
                 <button class="action-btn" onclick="goHome()">🏠 Home</button>
@@ -764,6 +1112,9 @@
                 <div class="stat-item">Longest Phrase: <span class="stat-value" id="longestWord">-</span></div>
                 <div class="stat-item">Genius Connections: <span class="stat-value" id="geniusCount">0</span></div>
             </div>
+            <div style="margin: 1rem 0;">
+                <button class="start-btn" onclick="shareGame()">📸 Share Results</button>
+            </div>
             <button class="start-btn" onclick="newGame()">🎮 Play Again</button>
             <button class="start-btn" onclick="goHome()">🏠 Home</button>
         </div>
@@ -776,6 +1127,17 @@
                     <div class="leaderboard-score">0</div>
                 </li>
             </ol>
+        </div>
+
+        <!-- Word History Sidebar -->
+        <div class="history-toggle" onclick="toggleHistory()">📜</div>
+        <div class="word-history" id="wordHistory">
+            <h3>🚂 Your Train</h3>
+            <div id="historyList">
+                <div style="text-align: center; color: var(--warm-brown); font-style: italic;">
+                    Start building your word train!
+                </div>
+            </div>
         </div>
     </div>
 
@@ -809,7 +1171,8 @@
             longestWord: '',
             geniusCount: 0,
             pendingConnection: null,
-            useAI: true // Now enabled by default!
+            useAI: true, // Now enabled by default!
+            historyOpen: false
         };
 
         // Your API URL
@@ -817,6 +1180,116 @@
 
         // Seed words for starting the game
         const SEED_WORDS = ['ocean', 'train', 'music', 'forest', 'star', 'book', 'kirk', 'magnitude'];
+
+        // Sound effects
+        class SoundEffects {
+            static play(type) {
+                if (!window.AudioContext && !window.webkitAudioContext) return;
+                
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                switch(type) {
+                    case 'success':
+                        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+                        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+                        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                        break;
+                    case 'genius':
+                        // Ascending chord
+                        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+                        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime + 0.1); // E5
+                        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime + 0.2); // G5
+                        gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                        break;
+                    case 'whoosh':
+                        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                        oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.3);
+                        gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                        break;
+                    case 'chug':
+                        oscillator.frequency.setValueAtTime(100, audioContext.currentTime);
+                        gainNode.gain.setValueAtTime(0.03, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                        break;
+                }
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            }
+
+            static vibrate(pattern = [100]) {
+                if (navigator.vibrate) {
+                    navigator.vibrate(pattern);
+                }
+            }
+        }
+
+        // Particle effects
+        function createParticles(element, type, count = 12) {
+            const rect = element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                particle.className = `particle ${type}`;
+                
+                const size = Math.random() * 8 + 4;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                particle.style.left = centerX + (Math.random() - 0.5) * 100 + 'px';
+                particle.style.top = centerY + (Math.random() - 0.5) * 100 + 'px';
+                
+                document.body.appendChild(particle);
+                
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, 2000);
+            }
+        }
+
+        // Floating score animation
+        function showFloatingScore(points, element) {
+            const rect = element.getBoundingClientRect();
+            const floatingScore = document.createElement('div');
+            floatingScore.className = 'floating-score';
+            floatingScore.textContent = '+' + points;
+            
+            floatingScore.style.left = (rect.left + rect.width / 2) + 'px';
+            floatingScore.style.top = rect.top + 'px';
+            
+            if (points >= 7) {
+                floatingScore.style.color = 'gold';
+                floatingScore.style.fontSize = '2rem';
+            }
+            
+            document.body.appendChild(floatingScore);
+            
+            setTimeout(() => {
+                if (floatingScore.parentNode) {
+                    floatingScore.parentNode.removeChild(floatingScore);
+                }
+            }, 2000);
+        }
+
+        // Screen shake effect
+        function shakeScreen() {
+            document.body.classList.add('screen-shake');
+            setTimeout(() => {
+                document.body.classList.remove('screen-shake');
+            }, 500);
+        }
 
         // Common words dictionary for spell checking
         const COMMON_WORDS = [
@@ -971,12 +1444,36 @@
             static async judgeWithAI(prevWord, newPhrase) {
                 document.getElementById('aiStatus').innerHTML = '🤖 AI Thinking<span class="loading-dots">...</span>';
                 
-                // Simulate API call
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                const result = this.judgeLocally(prevWord, newPhrase);
-                document.getElementById('aiStatus').textContent = '🤖 Smart Judge';
-                return result;
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            prevWord: prevWord,
+                            newPhrase: newPhrase
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    
+                    const result = await response.json();
+                    document.getElementById('aiStatus').textContent = '🤖 Claude AI';
+                    
+                    return { 
+                        result: 'accept', 
+                        reason: result.reason || 'AI connection', 
+                        points: Math.min(10, Math.max(1, result.points || 3))
+                    };
+                    
+                } catch (error) {
+                    console.log('AI API failed, using local judge:', error);
+                    document.getElementById('aiStatus').textContent = '🤖 Local Judge (AI Failed)';
+                    throw error; // This will trigger fallback to local judge
+                }
             }
 
             static judgeLocally(prev, curr) {
@@ -1025,55 +1522,55 @@
                 const references = {
                     // Literature & Movies - expanded for multi-word
                     'spice': { 
-                        'dune': { reason: 'Dune literary reference', points: 7 },
-                        'dune messiah': { reason: 'Advanced Dune reference', points: 8 }
+                        'dune': { reason: 'Brilliant Dune sci-fi reference! Spice is the most valuable substance in Frank Herbert\'s universe', points: 8 },
+                        'dune messiah': { reason: 'Advanced Dune knowledge - the sequel! Deep sci-fi literature appreciation', points: 9 }
                     },
                     'ring': { 
-                        'tolkien': { reason: 'Lord of the Rings reference', points: 7 },
-                        'sauron': { reason: 'Lord of the Rings reference', points: 7 },
-                        'frodo': { reason: 'Lord of the Rings reference', points: 6 },
-                        'lord rings': { reason: 'Lord of the Rings reference', points: 7 },
-                        'mount doom': { reason: 'Lord of the Rings location', points: 8 }
+                        'tolkien': { reason: 'Excellent Tolkien reference! The master of fantasy literature', points: 7 },
+                        'sauron': { reason: 'Lord of the Rings villain! The Dark Lord and his One Ring', points: 7 },
+                        'frodo': { reason: 'Perfect LOTR connection! Frodo the ring-bearer', points: 6 },
+                        'lord rings': { reason: 'Classic Tolkien reference! Epic fantasy literature', points: 7 },
+                        'mount doom': { reason: 'LOTR geography genius! Where the One Ring was forged and destroyed', points: 8 }
                     },
                     'force': { 
-                        'jedi': { reason: 'Star Wars reference', points: 6 },
-                        'vader': { reason: 'Star Wars reference', points: 6 },
-                        'star wars': { reason: 'Star Wars reference', points: 7 },
-                        'luke skywalker': { reason: 'Star Wars character', points: 7 }
+                        'jedi': { reason: 'Star Wars mastery! The Force flows through the Jedi', points: 6 },
+                        'vader': { reason: 'Iconic Star Wars villain! Darth Vader and the dark side', points: 6 },
+                        'star wars': { reason: 'Perfect sci-fi connection! May the Force be with you', points: 7 },
+                        'luke skywalker': { reason: 'Star Wars hero! The farm boy who became a Jedi Master', points: 7 }
                     },
                     'magic': {
-                        'harry potter': { reason: 'Harry Potter reference', points: 7 },
-                        'dumbledore': { reason: 'Harry Potter character', points: 6 },
-                        'hogwarts': { reason: 'Harry Potter location', points: 7 }
+                        'harry potter': { reason: 'Wizarding world brilliance! J.K. Rowling\'s magical universe', points: 7 },
+                        'dumbledore': { reason: 'Hogwarts headmaster! The greatest wizard of his time', points: 6 },
+                        'hogwarts': { reason: 'Magical school excellence! The most famous wizarding school', points: 7 }
                     },
                     'death': {
-                        'grim reaper': { reason: 'Death personification', points: 6 },
-                        'angel death': { reason: 'Biblical reference', points: 7 }
+                        'grim reaper': { reason: 'Classic death personification! The hooded figure with the scythe', points: 6 },
+                        'angel death': { reason: 'Biblical reference! The destroying angel', points: 7 }
                     },
                     'space': {
-                        'black hole': { reason: 'Astrophysics concept', points: 6 },
-                        'death star': { reason: 'Star Wars reference', points: 7 },
-                        'star trek': { reason: 'Science fiction reference', points: 6 }
+                        'black hole': { reason: 'Astrophysics knowledge! Gravitational singularities in spacetime', points: 6 },
+                        'death star': { reason: 'Star Wars tech! The Empire\'s ultimate weapon', points: 7 },
+                        'star trek': { reason: 'Sci-fi classic! To boldly go where no one has gone before', points: 6 }
                     },
                     'tree': {
-                        'yggdrasil': { reason: 'Norse mythology reference', points: 8 },
-                        'world tree': { reason: 'Mythological concept', points: 7 }
+                        'yggdrasil': { reason: 'Norse mythology mastery! The World Tree connecting all nine realms', points: 9 },
+                        'world tree': { reason: 'Mythological concept! The cosmic tree in various cultures', points: 7 }
                     },
                     'weapon': {
-                        'excalibur': { reason: 'Arthurian legend', points: 7 },
-                        'bastard sword': { reason: 'Medieval weaponry', points: 5 }
+                        'excalibur': { reason: 'Arthurian legend! King Arthur\'s legendary sword', points: 7 },
+                        'bastard sword': { reason: 'Medieval weaponry knowledge! A hand-and-a-half sword', points: 5 }
                     },
                     'ocean': { 
-                        'poseidon': { reason: 'Greek mythology reference', points: 6 },
-                        'moby dick': { reason: 'Literary reference', points: 7 }
+                        'poseidon': { reason: 'Greek mythology! The god of the seas and earthquakes', points: 6 },
+                        'moby dick': { reason: 'Literary classic! Herman Melville\'s great white whale', points: 7 }
                     },
                     'thunder': { 
-                        'thor': { reason: 'Norse mythology reference', points: 6 },
-                        'zeus': { reason: 'Greek mythology reference', points: 6 }
+                        'thor': { reason: 'Norse mythology! The hammer-wielding god of thunder', points: 6 },
+                        'zeus': { reason: 'Greek mythology! King of the gods and lord of the sky', points: 6 }
                     },
                     'apple': { 
-                        'newton': { reason: 'Scientific historical reference', points: 6 },
-                        'adam eve': { reason: 'Biblical reference', points: 7 }
+                        'newton': { reason: 'Scientific history! The apple that inspired gravity theory', points: 6 },
+                        'adam eve': { reason: 'Biblical reference! The forbidden fruit in Eden', points: 7 }
                     }
                 };
 
@@ -1096,14 +1593,14 @@
                 for (const cWord of currWords) {
                     if (references[prev] && references[prev][cWord]) {
                         const ref = references[prev][cWord];
-                        return { found: true, reason: ref.reason + ' (partial)', points: ref.points - 1 };
+                        return { found: true, reason: ref.reason + ' (partial match)', points: Math.max(1, ref.points - 1) };
                     }
                 }
 
                 for (const pWord of prevWords) {
                     if (references[pWord] && references[pWord][curr]) {
                         const ref = references[pWord][curr];
-                        return { found: true, reason: ref.reason + ' (partial)', points: ref.points - 1 };
+                        return { found: true, reason: ref.reason + ' (partial match)', points: Math.max(1, ref.points - 1) };
                     }
                 }
 
@@ -1123,10 +1620,10 @@
 
                 for (const [key, connections] of Object.entries(semanticMaps)) {
                     if (prev === key && connections.includes(curr)) {
-                        return { found: true, reason: 'Advanced semantic connection', points: 4 };
+                        return { found: true, reason: 'Advanced semantic connection! Related concepts', points: 4 };
                     }
                     if (curr === key && connections.includes(prev)) {
-                        return { found: true, reason: 'Advanced semantic connection', points: 4 };
+                        return { found: true, reason: 'Advanced semantic connection! Related concepts', points: 4 };
                     }
                     
                     // Check partial word matches
@@ -1135,13 +1632,13 @@
                     
                     for (const word of currWords) {
                         if (prev === key && connections.includes(word)) {
-                            return { found: true, reason: 'Semantic connection', points: 3 };
+                            return { found: true, reason: 'Semantic connection! Same category', points: 3 };
                         }
                     }
                     
                     for (const word of prevWords) {
                         if (word === key && connections.includes(curr)) {
-                            return { found: true, reason: 'Semantic connection', points: 3 };
+                            return { found: true, reason: 'Semantic connection! Same category', points: 3 };
                         }
                     }
                 }
@@ -1160,18 +1657,18 @@
 
             static validateExplanation(explanation, prevWord, newWord) {
                 if (!explanation || explanation.trim().length < 8) {
-                    return { result: 'accept', reason: 'Brief explanation accepted', points: 2 };
+                    return { result: 'accept', reason: 'Brief explanation accepted! Thanks for trying', points: 2 };
                 }
 
                 const length = explanation.trim().length;
                 const hasKeywords = /reference|connection|meaning|symbol|represent|relate|because|since|like|similar/i.test(explanation);
                 
                 if (length > 50 && hasKeywords) {
-                    return { result: 'accept', reason: 'Detailed creative explanation', points: 7 };
+                    return { result: 'accept', reason: 'Detailed creative explanation! Love the thoughtfulness', points: 7 };
                 } else if (length > 30) {
-                    return { result: 'accept', reason: 'Good creative explanation', points: 5 };
+                    return { result: 'accept', reason: 'Good creative explanation! Nice reasoning', points: 5 };
                 } else {
-                    return { result: 'accept', reason: 'Creative connection', points: 3 };
+                    return { result: 'accept', reason: 'Creative connection explained! Well done', points: 3 };
                 }
             }
         }
@@ -1193,7 +1690,8 @@
                 longestWord: '',
                 geniusCount: 0,
                 pendingConnection: null,
-                useAI: false
+                useAI: true,
+                historyOpen: false
             };
 
             document.getElementById('titleScreen').style.display = 'none';
@@ -1202,10 +1700,14 @@
             document.getElementById('leaderboardSection').style.display = 'none';
 
             updateDisplay();
+            updateWordHistory();
             setupGameMode();
             generateTrack();
             
             document.getElementById('wordInput').focus();
+
+            // Play start sound
+            SoundEffects.play('whoosh');
         }
 
         function setupGameMode() {
@@ -1308,7 +1810,7 @@
             }
 
             // Track genius connections
-            if (judgment.points >= 6) {
+            if (judgment.points >= 7) {
                 gameState.geniusCount++;
             }
             
@@ -1326,16 +1828,51 @@
             
             // Add train car with special styling
             const isCombo = judgment.points >= 3;
-            const isGenius = judgment.points >= 6;
+            const isGenius = judgment.points >= 7;
             addTrainCar(newPhrase, isCombo, isGenius);
             
-            // Show success feedback
-            const feedbackClass = judgment.points >= 6 ? 'genius' : 'success';
-            const emoji = judgment.points >= 6 ? '⭐' : judgment.points >= 4 ? '🌟' : '✨';
+            // Visual and audio effects
+            const trainContainer = document.getElementById('trainContainer');
+            trainContainer.classList.add('moving');
+            setTimeout(() => trainContainer.classList.remove('moving'), 2000);
+
+            if (judgment.points >= 8) {
+                // Genius level - screen shake + particles + sound
+                shakeScreen();
+                createParticles(trainContainer, 'confetti', 20);
+                SoundEffects.play('genius');
+                SoundEffects.vibrate([100, 50, 100]);
+            } else if (judgment.points >= 6) {
+                // Great connection - particles + sound
+                createParticles(trainContainer, 'sparkle', 15);
+                SoundEffects.play('success');
+                SoundEffects.vibrate([100]);
+            } else if (judgment.points >= 3) {
+                // Good connection - sound
+                SoundEffects.play('success');
+            }
+
+            // Floating score
+            showFloatingScore(finalPoints, trainContainer);
+            
+            // Score increase animation
+            const scoreDisplay = document.getElementById('currentScore');
+            scoreDisplay.parentElement.classList.add('score-increase');
+            setTimeout(() => {
+                scoreDisplay.parentElement.classList.remove('score-increase');
+            }, 600);
+
+            // Chug sound
+            SoundEffects.play('chug');
+            
+            // Show feedback with enthusiasm matching points
+            const feedbackClass = judgment.points >= 8 ? 'genius' : judgment.points >= 6 ? 'success' : 'success';
+            const emoji = judgment.points >= 8 ? '🏆' : judgment.points >= 6 ? '⭐' : judgment.points >= 4 ? '🌟' : '✨';
             showFeedback(`${emoji} ${judgment.reason}! +${finalPoints} points`, feedbackClass);
             
-            // Update display
+            // Update displays
             updateDisplay();
+            updateWordHistory();
             generateTrack();
             
             // Restart timer for rapid mode
@@ -1381,7 +1918,7 @@
             gameState.pendingConnection = null;
             
             // Accept with minimal points
-            const skipJudgment = { points: 1, reason: 'Connection accepted' };
+            const skipJudgment = { points: 1, reason: 'Connection accepted! Thanks for playing' };
             acceptWord(connection.word, skipJudgment);
         }
 
@@ -1448,17 +1985,19 @@
             const segments = Math.floor(gameState.score / 10);
             const tunnels = Math.floor(gameState.score / 50);
             
-            // Add rail segments
+            // Add rail segments with staggered animation
             for (let i = 0; i < segments; i++) {
                 const segment = document.createElement('div');
                 segment.className = 'rail-segment';
+                segment.style.animationDelay = (i * 0.1) + 's';
                 track.appendChild(segment);
             }
             
-            // Add tunnels
+            // Add tunnels with animation
             for (let i = 0; i < tunnels; i++) {
                 const tunnel = document.createElement('div');
                 tunnel.className = 'tunnel';
+                tunnel.style.animationDelay = (segments * 0.1 + i * 0.3) + 's';
                 track.appendChild(tunnel);
             }
         }
@@ -1478,11 +2017,94 @@
                 'Think mythology! (Thor, Zeus, Yggdrasil)', 
                 'Scientific terms work great! (Black Hole, Quantum Physics)',
                 'Literary connections = big points! (Moby Dick, Lord Rings)',
-                'Multi-word phrases get bonus points!'
+                'Multi-word phrases get bonus points!',
+                'Cultural references amaze the AI! (Dune, Star Wars)',
+                'Historical figures work well! (Einstein, Newton)'
             ];
             
             const randomHint = hints[Math.floor(Math.random() * hints.length)];
             showFeedback(`💡 Hint: ${randomHint}`, 'question');
+        }
+
+        function toggleAI() {
+            gameState.useAI = !gameState.useAI;
+            const toggleBtn = document.getElementById('aiToggleBtn');
+            const statusDisplay = document.getElementById('aiStatus');
+            
+            if (gameState.useAI) {
+                toggleBtn.textContent = '🤖 AI: ON';
+                statusDisplay.textContent = '🤖 Claude AI';
+                showFeedback('Claude AI enabled! Creative connections will be smarter.', 'success');
+            } else {
+                toggleBtn.textContent = '🤖 AI: OFF';
+                statusDisplay.textContent = '🧠 Local Judge';
+                showFeedback('Using local judge. Still smart, but no AI magic!', 'question');
+            }
+        }
+
+        function toggleHistory() {
+            gameState.historyOpen = !gameState.historyOpen;
+            const history = document.getElementById('wordHistory');
+            
+            if (gameState.historyOpen) {
+                history.classList.add('open');
+            } else {
+                history.classList.remove('open');
+            }
+        }
+
+        function updateWordHistory() {
+            const historyList = document.getElementById('historyList');
+            
+            if (gameState.wordChain.length === 0) {
+                historyList.innerHTML = '<div style="text-align: center; color: var(--warm-brown); font-style: italic;">Start building your word train!</div>';
+                return;
+            }
+            
+            const historyHTML = gameState.wordChain.map((word, index) => {
+                return `<div class="history-item">
+                    <span>${word}</span>
+                    <span style="font-size: 0.8rem; opacity: 0.7;">#${index + 1}</span>
+                </div>`;
+            }).join('');
+            
+            historyList.innerHTML = historyHTML;
+        }
+
+        function shareGame() {
+            const shareText = `🚂 Word Train Results 🚂
+Score: ${gameState.score} points
+Words: ${gameState.wordsAdded}
+Best Combo: ${gameState.bestCombo.toFixed(1)}x
+Genius Connections: ${gameState.geniusCount}
+
+My train: ${gameState.wordChain.join(' → ')}
+
+Play at: ${window.location.href}`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Word Train Results',
+                    text: shareText
+                });
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showFeedback('Results copied to clipboard!', 'success');
+                });
+            } else {
+                // Fallback - show text in modal
+                const modal = document.createElement('div');
+                modal.innerHTML = `
+                    <div class="modal-overlay" style="display: block;">
+                        <div class="modal">
+                            <h3>Share Your Results</h3>
+                            <textarea readonly style="width: 100%; height: 150px; font-family: monospace;">${shareText}</textarea>
+                            <button class="submit-btn" onclick="this.closest('.modal-overlay').remove()">Close</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
         }
 
         function showFeedback(message, type) {
@@ -1502,12 +2124,12 @@
             document.getElementById('comboMultiplier').textContent = gameState.comboMultiplier.toFixed(1) + 'x';
             document.getElementById('currentWordDisplay').textContent = gameState.currentWord;
             
-            // Update background based on score
+            // Update background based on score with smoother transitions
             const scene = document.getElementById('trainScene');
             if (gameState.score >= 200) {
                 scene.className = 'train-scene bg-night';
             } else if (gameState.score >= 100) {
-                scene.className = 'train-scene bg-city';
+                scene.className = 'train-scene bg-sunset';
             } else {
                 scene.className = 'train-scene bg-day';
             }
