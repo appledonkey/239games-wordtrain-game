@@ -1,1 +1,1624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚂 Word Train</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Kalam', cursive;
+            background: linear-gradient(135deg, #F5F3F0 0%, #E8E6E3 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* RailBound-inspired Color Palette */
+        :root {
+            --primary-peach: #F4A57A;
+            --primary-mint: #9BC5A2;
+            --primary-lavender: #B5A7E6;
+            --soft-cream: #F8F6F2;
+            --warm-brown: #8B7355;
+            --muted-coral: #E89C85;
+            --pale-blue: #A8C8EC;
+            --soft-yellow: #F2E5A2;
+            --gentle-pink: #E6B3C7;
+        }
+
+        /* Title Screen */
+        #titleScreen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            background: linear-gradient(45deg, var(--primary-peach), var(--primary-mint), var(--primary-lavender), var(--pale-blue));
+            background-size: 400% 400%;
+            animation: gentleShift 12s ease infinite;
+        }
+
+        @keyframes gentleShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .title-logo {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--soft-cream);
+            text-shadow: 3px 3px 0px var(--warm-brown), 6px 6px 8px rgba(0,0,0,0.2);
+            margin-bottom: 1.5rem;
+            transform: rotate(-3deg);
+            border: 4px solid var(--warm-brown);
+            background: rgba(255,255,255,0.1);
+            padding: 1rem 1.5rem;
+            border-radius: 25px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--warm-brown);
+            margin-bottom: 2.5rem;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            border: 2px solid var(--warm-brown);
+        }
+
+        .start-btn {
+            background: var(--primary-mint);
+            color: var(--warm-brown);
+            border: 3px solid var(--warm-brown);
+            padding: 0.8rem 1.5rem;
+            font-size: 1.2rem;
+            font-family: 'Kalam', cursive;
+            font-weight: 700;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px var(--warm-brown);
+            transform: rotate(-1deg);
+            transition: all 0.2s ease;
+            margin: 0.3rem;
+        }
+
+        .start-btn:hover {
+            transform: rotate(1deg) translateY(-2px);
+            box-shadow: 6px 6px 0px var(--warm-brown);
+        }
+
+        .branding {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--warm-brown);
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.7);
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            border: 2px solid var(--warm-brown);
+        }
+
+        /* Game Screen */
+        #gameScreen {
+            display: none;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: var(--soft-cream);
+            padding: 1rem;
+            border-radius: 20px;
+            box-shadow: 3px 3px 0px var(--warm-brown);
+            border: 2px solid var(--warm-brown);
+        }
+
+        .score-display {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--muted-coral);
+        }
+
+        .combo-display {
+            font-size: 1.1rem;
+            color: var(--primary-mint);
+            font-weight: 700;
+        }
+
+        .timer-display {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-lavender);
+        }
+
+        .ai-status {
+            font-size: 0.9rem;
+            color: var(--warm-brown);
+            background: var(--soft-yellow);
+            padding: 0.3rem 0.6rem;
+            border-radius: 10px;
+            border: 2px solid var(--warm-brown);
+        }
+
+        /* Train Scene - Isometric Style */
+        .train-scene {
+            background: linear-gradient(to bottom, var(--pale-blue) 0%, var(--soft-cream) 70%, var(--primary-mint) 100%);
+            border-radius: 25px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            min-height: 220px;
+            position: relative;
+            overflow-x: auto;
+            border: 3px solid var(--warm-brown);
+            box-shadow: 5px 5px 0px rgba(139, 115, 85, 0.3);
+        }
+
+        /* Soft cloud decorations */
+        .train-scene::before {
+            content: '☁️ ☁️ ☁️';
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 1.5rem;
+            opacity: 0.6;
+        }
+
+        .train-track {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            right: 0;
+            height: 25px;
+            display: flex;
+            align-items: center;
+        }
+
+        .rail-segment {
+            width: 35px;
+            height: 12px;
+            background: var(--warm-brown);
+            margin: 0 3px;
+            border-radius: 6px;
+            border: 2px solid #6B5D47;
+            position: relative;
+        }
+
+        .rail-segment::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 4px;
+            background: #5A4D3A;
+            border-radius: 50%;
+        }
+
+        .tunnel {
+            width: 70px;
+            height: 50px;
+            background: linear-gradient(to bottom, #444, #666);
+            border-radius: 35px 35px 0 0;
+            position: relative;
+            margin: 0 15px;
+            border: 3px solid var(--warm-brown);
+        }
+
+        .tunnel::before {
+            content: '🚇';
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.8rem;
+        }
+
+        .train-container {
+            position: absolute;
+            bottom: 85px;
+            left: 50px;
+            display: flex;
+            align-items: flex-end;
+            transition: all 0.8s ease;
+        }
+
+        /* Comic book style train elements */
+        .train-engine {
+            width: 85px;
+            height: 65px;
+            background: linear-gradient(45deg, var(--muted-coral), var(--primary-peach));
+            border-radius: 15px 15px 5px 5px;
+            position: relative;
+            margin-right: 8px;
+            border: 3px solid var(--warm-brown);
+            box-shadow: 2px 2px 0px rgba(139, 115, 85, 0.8);
+            transform: perspective(100px) rotateY(-5deg);
+        }
+
+        .train-engine::before {
+            content: '🚂';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.2rem;
+        }
+
+        .train-car {
+            min-width: 75px;
+            max-width: 100px;
+            height: 55px;
+            background: linear-gradient(45deg, var(--primary-mint), var(--pale-blue));
+            border-radius: 12px 12px 4px 4px;
+            margin-right: 6px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--warm-brown);
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.7);
+            border: 3px solid var(--warm-brown);
+            box-shadow: 2px 2px 0px rgba(139, 115, 85, 0.8);
+            word-wrap: break-word;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            transform: perspective(100px) rotateY(-3deg);
+            padding: 0.2rem;
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        .train-car.combo {
+            background: linear-gradient(45deg, var(--primary-lavender), var(--gentle-pink));
+            animation: gentlePulse 2s infinite;
+            border-color: var(--muted-coral);
+        }
+
+        .train-car.genius {
+            background: linear-gradient(45deg, var(--soft-yellow), var(--primary-peach));
+            animation: geniusGlow 1.5s infinite;
+            border-color: gold;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 2px 2px 0px rgba(139, 115, 85, 0.8);
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { transform: perspective(100px) rotateY(-3deg) scale(1); }
+            50% { transform: perspective(100px) rotateY(-3deg) scale(1.05); }
+        }
+
+        @keyframes geniusGlow {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 2px 2px 0px rgba(139, 115, 85, 0.8); }
+            50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 2px 2px 0px rgba(139, 115, 85, 0.8); }
+        }
+
+        .train-caboose {
+            width: 65px;
+            height: 50px;
+            background: linear-gradient(45deg, var(--soft-yellow), var(--primary-mint));
+            border-radius: 10px 10px 3px 3px;
+            position: relative;
+            border: 3px solid var(--warm-brown);
+            box-shadow: 2px 2px 0px rgba(139, 115, 85, 0.8);
+            transform: perspective(100px) rotateY(-2deg);
+        }
+
+        .train-caboose::before {
+            content: '🚃';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.7rem;
+        }
+
+        /* Game Controls - Comic Book Style */
+        .game-controls {
+            background: var(--soft-cream);
+            padding: 2rem;
+            border-radius: 25px;
+            border: 3px solid var(--warm-brown);
+            box-shadow: 5px 5px 0px rgba(139, 115, 85, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .current-word {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .current-word h3 {
+            font-size: 1.2rem;
+            color: var(--warm-brown);
+            margin-bottom: 0.5rem;
+        }
+
+        .current-word .word {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--muted-coral);
+            text-shadow: 2px 2px 0px var(--warm-brown), 4px 4px 8px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.3);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            border: 2px solid var(--warm-brown);
+            display: inline-block;
+        }
+
+        .scoring-hint {
+            text-align: center;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            color: var(--warm-brown);
+            background: var(--pale-blue);
+            padding: 0.5rem;
+            border-radius: 12px;
+            border: 2px solid var(--warm-brown);
+        }
+
+        .input-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: center;
+        }
+
+        #wordInput {
+            flex: 1;
+            padding: 1rem;
+            font-size: 1.4rem;
+            font-family: 'Kalam', cursive;
+            border: 3px solid var(--primary-mint);
+            border-radius: 18px;
+            outline: none;
+            background: rgba(255,255,255,0.9);
+            color: var(--warm-brown);
+            box-shadow: inset 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #wordInput:focus {
+            border-color: var(--muted-coral);
+            box-shadow: 0 0 8px rgba(244, 165, 122, 0.4), inset 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .submit-btn {
+            background: var(--primary-mint);
+            color: var(--warm-brown);
+            border: 3px solid var(--warm-brown);
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            font-family: 'Kalam', cursive;
+            font-weight: 700;
+            border-radius: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 3px 3px 0px var(--warm-brown);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 4px 4px 0px var(--warm-brown);
+        }
+
+        .submit-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: var(--primary-lavender);
+            color: var(--warm-brown);
+            border: 2px solid var(--warm-brown);
+            padding: 0.7rem 1rem;
+            font-size: 0.95rem;
+            font-family: 'Kalam', cursive;
+            font-weight: 700;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 2px 2px 0px rgba(139, 115, 85, 0.6);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 3px 3px 0px rgba(139, 115, 85, 0.6);
+        }
+
+        .action-btn:disabled {
+            background: #ddd;
+            color: #888;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Feedback Messages */
+        .feedback-message {
+            background: var(--primary-mint);
+            color: var(--warm-brown);
+            padding: 1rem;
+            border-radius: 15px;
+            border: 2px solid var(--warm-brown);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 700;
+            animation: fadeIn 0.5s ease;
+            box-shadow: 2px 2px 0px rgba(139, 115, 85, 0.4);
+        }
+
+        .feedback-message.success {
+            background: var(--soft-yellow);
+        }
+
+        .feedback-message.genius {
+            background: linear-gradient(135deg, gold, var(--soft-yellow));
+            color: var(--warm-brown);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3), 2px 2px 0px rgba(139, 115, 85, 0.4);
+        }
+
+        .feedback-message.suggestion {
+            background: var(--pale-blue);
+            color: var(--warm-brown);
+        }
+
+        .feedback-message.question {
+            background: var(--gentle-pink);
+        }
+
+        .suggestion-btn {
+            background: var(--primary-mint);
+            color: var(--warm-brown);
+            border: 2px solid var(--warm-brown);
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-family: 'Kalam', cursive;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            margin: 0.3rem;
+            transition: all 0.2s ease;
+        }
+
+        .suggestion-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 2px 2px 0px rgba(139, 115, 85, 0.6);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Modal - Comic Book Style */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--soft-cream);
+            padding: 2rem;
+            border-radius: 25px;
+            border: 4px solid var(--warm-brown);
+            box-shadow: 8px 8px 0px rgba(139, 115, 85, 0.5);
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal h3 {
+            color: var(--muted-coral);
+            margin-bottom: 1rem;
+        }
+
+        #explanationInput {
+            width: 100%;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Kalam', cursive;
+            border: 3px solid var(--primary-mint);
+            border-radius: 15px;
+            outline: none;
+            color: var(--warm-brown);
+        }
+
+        /* Game Over Screen */
+        .game-over {
+            display: none;
+            text-align: center;
+            background: var(--soft-cream);
+            padding: 3rem;
+            border-radius: 25px;
+            border: 4px solid var(--warm-brown);
+            box-shadow: 6px 6px 0px rgba(139, 115, 85, 0.4);
+            margin: 2rem 0;
+        }
+
+        .crash-animation {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: comicShake 0.6s ease-in-out;
+        }
+
+        @keyframes comicShake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            25% { transform: translateX(-8px) rotate(-3deg); }
+            75% { transform: translateX(8px) rotate(3deg); }
+        }
+
+        .final-stats {
+            margin: 2rem 0;
+        }
+
+        .stat-item {
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
+            color: var(--warm-brown);
+        }
+
+        .stat-value {
+            font-weight: 700;
+            color: var(--muted-coral);
+        }
+
+        /* Leaderboard */
+        .leaderboard {
+            background: var(--soft-cream);
+            padding: 2rem;
+            border-radius: 25px;
+            border: 3px solid var(--warm-brown);
+            box-shadow: 5px 5px 0px rgba(139, 115, 85, 0.3);
+            margin-top: 2rem;
+        }
+
+        .leaderboard h3 {
+            text-align: center;
+            color: var(--muted-coral);
+            margin-bottom: 1.5rem;
+            font-size: 1.6rem;
+        }
+
+        .leaderboard-list {
+            list-style: none;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            background: linear-gradient(135deg, var(--primary-mint), var(--pale-blue));
+            color: var(--warm-brown);
+            border-radius: 12px;
+            border: 2px solid var(--warm-brown);
+            font-weight: 700;
+            box-shadow: 2px 2px 0px rgba(139, 115, 85, 0.4);
+        }
+
+        .leaderboard-rank {
+            font-size: 1.1rem;
+            width: 30px;
+        }
+
+        .leaderboard-score {
+            font-size: 1rem;
+        }
+
+        /* Background transitions */
+        .bg-day {
+            background: linear-gradient(to bottom, var(--pale-blue) 0%, var(--soft-cream) 70%, var(--primary-mint) 100%);
+        }
+
+        .bg-city {
+            background: linear-gradient(to bottom, var(--primary-peach) 0%, var(--soft-cream) 50%, var(--primary-lavender) 100%);
+        }
+
+        .bg-night {
+            background: linear-gradient(to bottom, #6B5B95 0%, var(--primary-lavender) 50%, var(--soft-cream) 100%);
+        }
+
+        /* Loading indicator */
+        .loading-dots {
+            display: inline-block;
+            animation: loadingDots 1.4s infinite;
+        }
+
+        @keyframes loadingDots {
+            0%, 80%, 100% { opacity: 0; }
+            40% { opacity: 1; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .title-logo {
+                font-size: 2.8rem;
+            }
+            
+            .current-word .word {
+                font-size: 1.8rem;
+            }
+            
+            .input-section {
+                flex-direction: column;
+            }
+            
+            #wordInput {
+                font-size: 1.2rem;
+            }
+            
+            .train-car {
+                font-size: 0.6rem;
+                min-width: 60px;
+                max-width: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Title Screen -->
+    <div id="titleScreen">
+        <div class="title-logo">🚂 WORD TRAIN</div>
+        <div class="subtitle">Multi-word phrases • Never crashes • Always learn!</div>
+        
+        <div style="margin: 1rem 0;">
+            <button class="start-btn" onclick="startGame('classic')">🎮 Classic Mode</button>
+            <button class="start-btn" onclick="startGame('rapid')">⚡ Rapid Rail Mode</button>
+        </div>
+        
+        <div style="font-size: 0.9rem; color: var(--warm-brown); margin-top: 1rem; background: rgba(255,255,255,0.7); padding: 0.8rem; border-radius: 10px; max-width: 500px;">
+            <strong>New Features:</strong><br>
+            ✅ Multi-word phrases (Harry Potter, Black Hole)<br>
+            ✅ Spell suggestions (Ygdrasil → Yggdrasil)<br>
+            ✅ Never crashes - always explain option!<br>
+            ✅ Cultural references = big points! 🌟
+        </div>
+        
+        <div class="branding">239 GAMES</div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen">
+        <div class="game-header">
+            <div class="score-display">Score: <span id="currentScore">0</span></div>
+            <div class="combo-display">Combo: <span id="comboMultiplier">1x</span></div>
+            <div class="ai-status" id="aiStatus">🤖 Smart Judge</div>
+            <div class="timer-display" id="timerDisplay" style="display: none;">Time: <span id="timeLeft">5</span>s</div>
+        </div>
+
+        <div class="train-scene" id="trainScene">
+            <div class="train-track" id="trainTrack"></div>
+            <div class="train-container" id="trainContainer">
+                <div class="train-engine"></div>
+                <div class="train-caboose"></div>
+            </div>
+        </div>
+
+        <div class="game-controls">
+            <div class="current-word">
+                <h3>Connect this word:</h3>
+                <div class="word" id="currentWordDisplay">ocean</div>
+            </div>
+
+            <div class="scoring-hint">
+                💡 Try multi-word phrases! "Grim Reaper", "Harry Potter", "Black Hole"
+            </div>
+
+            <div id="feedbackContainer"></div>
+
+            <div class="input-section">
+                <input type="text" id="wordInput" placeholder="Type 1-3 words here..." maxlength="50">
+                <button class="submit-btn" id="submitBtn" onclick="submitWord()">Add Car</button>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" id="switchTracksBtn" onclick="switchTracks()">🔄 Switch Tracks (10 pts)</button>
+                <button class="action-btn" onclick="newGame()">🆕 New Game</button>
+                <button class="action-btn" onclick="showLeaderboard()">🏆 Leaderboard</button>
+                <button class="action-btn" onclick="goHome()">🏠 Home</button>
+            </div>
+        </div>
+
+        <div class="game-over" id="gameOverScreen">
+            <div class="crash-animation">🎓📚✨</div>
+            <h2 style="color: var(--muted-coral); margin-bottom: 1rem;">Learning Complete!</h2>
+            <div class="final-stats">
+                <div class="stat-item">Final Score: <span class="stat-value" id="finalScore">0</span></div>
+                <div class="stat-item">Words Added: <span class="stat-value" id="wordsAdded">0</span></div>
+                <div class="stat-item">Best Combo: <span class="stat-value" id="bestCombo">1x</span></div>
+                <div class="stat-item">Longest Phrase: <span class="stat-value" id="longestWord">-</span></div>
+                <div class="stat-item">Genius Connections: <span class="stat-value" id="geniusCount">0</span></div>
+            </div>
+            <button class="start-btn" onclick="newGame()">🎮 Play Again</button>
+            <button class="start-btn" onclick="goHome()">🏠 Home</button>
+        </div>
+
+        <div class="leaderboard" id="leaderboardSection" style="display: none;">
+            <h3>🏆 Top Conductors</h3>
+            <ol class="leaderboard-list" id="leaderboardList">
+                <li class="leaderboard-item">
+                    <div><span class="leaderboard-rank">1.</span> No scores yet</div>
+                    <div class="leaderboard-score">0</div>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Explanation Modal -->
+    <div class="modal-overlay" id="explanationModal">
+        <div class="modal">
+            <h3>Explain Your Connection</h3>
+            <p>How does "<span id="connectionWords"></span>" connect?</p>
+            <textarea id="explanationInput" placeholder="Briefly explain the connection..."></textarea>
+            <div style="margin-top: 1rem;">
+                <button class="submit-btn" onclick="submitExplanation()">Submit</button>
+                <button class="action-btn" onclick="skipExplanation()" style="margin-left: 1rem;">Skip (-1 pt)</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        let gameState = {
+            score: 0,
+            currentWord: '',
+            wordChain: [],
+            comboCount: 0,
+            comboMultiplier: 1,
+            gameMode: 'classic',
+            timeLeft: 5,
+            timer: null,
+            isGameActive: false,
+            wordsAdded: 0,
+            bestCombo: 1,
+            longestWord: '',
+            geniusCount: 0,
+            pendingConnection: null,
+            useAI: true // Now enabled by default!
+        };
+
+        // Your API URL
+        const API_URL = 'https://239games-wordtrain-fy0wlsk63-james-oswalds-projects.vercel.app/api/judge';
+
+        // Seed words for starting the game
+        const SEED_WORDS = ['ocean', 'train', 'music', 'forest', 'star', 'book', 'kirk', 'magnitude'];
+
+        // Common words dictionary for spell checking
+        const COMMON_WORDS = [
+            // Mythology & Literature
+            'yggdrasil', 'tolkien', 'gandalf', 'aragorn', 'legolas', 'gimli', 'frodo', 'bilbo',
+            'dumbledore', 'hermione', 'voldemort', 'snape', 'hagrid', 'sirius', 'severus',
+            'einstein', 'newton', 'darwin', 'shakespeare', 'homer', 'odyssey', 'iliad',
+            'poseidon', 'zeus', 'thor', 'odin', 'loki', 'athena', 'apollo', 'artemis',
+            'hercules', 'perseus', 'theseus', 'medusa', 'minotaur', 'cerberus',
+            
+            // Science & Space
+            'quantum', 'relativity', 'photon', 'electron', 'neutron', 'proton',
+            'galaxy', 'nebula', 'supernova', 'quasar', 'pulsar', 'asteroid',
+            'chromosome', 'molecule', 'atom', 'nucleus', 'isotope',
+            
+            // Multi-word phrases (stored as single entries for checking)
+            'harry potter', 'lord rings', 'star wars', 'game thrones', 'breaking bad',
+            'black hole', 'white dwarf', 'red giant', 'neutron star',
+            'grim reaper', 'angel death', 'santa claus', 'easter bunny',
+            'new york', 'los angeles', 'san francisco', 'las vegas',
+            'ice cream', 'hot dog', 'french fries', 'apple pie',
+            'fire engine', 'police car', 'school bus', 'garbage truck'
+        ];
+
+        // Spell checking utilities
+        function levenshteinDistance(str1, str2) {
+            const matrix = [];
+            const n = str2.length;
+            const m = str1.length;
+
+            if (n === 0) return m;
+            if (m === 0) return n;
+
+            for (let i = 0; i <= n; i++) {
+                matrix[i] = [i];
+            }
+
+            for (let j = 0; j <= m; j++) {
+                matrix[0][j] = j;
+            }
+
+            for (let i = 1; i <= n; i++) {
+                for (let j = 1; j <= m; j++) {
+                    if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1, // substitution
+                            matrix[i][j - 1] + 1, // insertion
+                            matrix[i - 1][j] + 1 // deletion
+                        );
+                    }
+                }
+            }
+
+            return matrix[n][m];
+        }
+
+        function findSpellingSuggestions(input) {
+            const inputLower = input.toLowerCase();
+            const suggestions = [];
+
+            // Check each word in our dictionary
+            for (const word of COMMON_WORDS) {
+                const distance = levenshteinDistance(inputLower, word);
+                const maxDistance = Math.max(1, Math.floor(word.length * 0.3)); // Allow 30% character difference
+                
+                if (distance <= maxDistance && distance > 0) {
+                    suggestions.push({ word, distance });
+                }
+            }
+
+            // Sort by distance and return top 3
+            return suggestions
+                .sort((a, b) => a.distance - b.distance)
+                .slice(0, 3)
+                .map(s => s.word);
+        }
+
+        function capitalizePhrase(phrase) {
+            return phrase
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join(' ');
+        }
+
+        function validateInput(input) {
+            const trimmed = input.trim();
+            
+            // Check length
+            if (!trimmed) {
+                return { valid: false, reason: 'Please enter a word or phrase' };
+            }
+
+            // Check word count (max 3 words)
+            const words = trimmed.split(/\s+/);
+            if (words.length > 3) {
+                return { valid: false, reason: 'Maximum 3 words allowed' };
+            }
+
+            // Check for valid characters (letters, spaces, hyphens, apostrophes)
+            if (!/^[a-zA-Z\s'-]+$/.test(trimmed)) {
+                return { valid: false, reason: 'Letters, spaces, hyphens and apostrophes only' };
+            }
+
+            // Check if already used
+            const normalizedInput = trimmed.toLowerCase();
+            if (gameState.wordChain.map(w => w.toLowerCase()).includes(normalizedInput)) {
+                return { valid: false, reason: 'Already used this word/phrase' };
+            }
+
+            // Check for filler words
+            const fillerWords = ['the', 'and', 'but', 'for', 'are', 'with', 'his', 'they', 'this', 'have', 'from', 'not', 'was', 'been', 'can', 'a', 'an'];
+            if (words.length === 1 && fillerWords.includes(normalizedInput)) {
+                return { valid: false, reason: 'Not a meaningful content word' };
+            }
+
+            return { valid: true, normalized: capitalizePhrase(trimmed) };
+        }
+
+        // Enhanced AI Judge with Multi-word Support
+        class AIJudge {
+            static async judge(previousWord, newPhrase) {
+                const validation = validateInput(newPhrase);
+                if (!validation.valid) {
+                    // Check for spelling suggestions
+                    const suggestions = findSpellingSuggestions(newPhrase.trim());
+                    if (suggestions.length > 0) {
+                        return { 
+                            result: 'suggest', 
+                            reason: 'Possible spelling error', 
+                            suggestions: suggestions.map(capitalizePhrase),
+                            points: 0 
+                        };
+                    }
+                    return { result: 'explain', reason: validation.reason, points: 0 };
+                }
+
+                // Try AI first if available
+                if (gameState.useAI) {
+                    try {
+                        return await this.judgeWithAI(previousWord, validation.normalized);
+                    } catch (error) {
+                        console.log('AI judge failed, falling back to local');
+                    }
+                }
+
+                // Local enhanced judge
+                return this.judgeLocally(previousWord, validation.normalized);
+            }
+
+            static async judgeWithAI(prevWord, newPhrase) {
+                document.getElementById('aiStatus').innerHTML = '🤖 AI Thinking<span class="loading-dots">...</span>';
+                
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                const result = this.judgeLocally(prevWord, newPhrase);
+                document.getElementById('aiStatus').textContent = '🤖 Smart Judge';
+                return result;
+            }
+
+            static judgeLocally(prev, curr) {
+                const prevLower = prev.toLowerCase();
+                const currLower = curr.toLowerCase();
+
+                // Cultural/Literary References (highest points)
+                const culturalConnection = this.checkCulturalReferences(prevLower, currLower);
+                if (culturalConnection.found) {
+                    return { result: 'accept', reason: culturalConnection.reason, points: culturalConnection.points };
+                }
+
+                // Multi-word phrase bonuses
+                const wordCount = curr.split(' ').length;
+                let phraseBonus = wordCount > 1 ? 1 : 0;
+
+                // Direct compound/root word connections
+                if (prevLower.includes(currLower) || currLower.includes(prevLower)) {
+                    return { result: 'accept', reason: 'Word compound connection', points: 3 + phraseBonus };
+                }
+
+                // Advanced semantic connections
+                const semanticConnection = this.checkSemanticConnections(prevLower, currLower);
+                if (semanticConnection.found) {
+                    return { result: 'accept', reason: semanticConnection.reason, points: semanticConnection.points + phraseBonus };
+                }
+
+                // Sound/rhyme connections (last word if multi-word)
+                const currLastWord = currLower.split(' ').pop();
+                if (this.soundSimilar(prevLower, currLastWord)) {
+                    return { result: 'accept', reason: 'Sound/rhyme connection', points: 2 + phraseBonus };
+                }
+
+                // Length bonus for sophisticated phrases
+                if (curr.length >= 12) {
+                    return { result: 'accept', reason: 'Sophisticated phrase', points: 4 + phraseBonus };
+                } else if (curr.length >= 8) {
+                    return { result: 'accept', reason: 'Creative phrase', points: 3 + phraseBonus };
+                }
+
+                // Always allow explanation instead of rejection
+                return { result: 'explain', reason: 'Explain this creative connection', points: 0 };
+            }
+
+            static checkCulturalReferences(prev, curr) {
+                const references = {
+                    // Literature & Movies - expanded for multi-word
+                    'spice': { 
+                        'dune': { reason: 'Dune literary reference', points: 7 },
+                        'dune messiah': { reason: 'Advanced Dune reference', points: 8 }
+                    },
+                    'ring': { 
+                        'tolkien': { reason: 'Lord of the Rings reference', points: 7 },
+                        'sauron': { reason: 'Lord of the Rings reference', points: 7 },
+                        'frodo': { reason: 'Lord of the Rings reference', points: 6 },
+                        'lord rings': { reason: 'Lord of the Rings reference', points: 7 },
+                        'mount doom': { reason: 'Lord of the Rings location', points: 8 }
+                    },
+                    'force': { 
+                        'jedi': { reason: 'Star Wars reference', points: 6 },
+                        'vader': { reason: 'Star Wars reference', points: 6 },
+                        'star wars': { reason: 'Star Wars reference', points: 7 },
+                        'luke skywalker': { reason: 'Star Wars character', points: 7 }
+                    },
+                    'magic': {
+                        'harry potter': { reason: 'Harry Potter reference', points: 7 },
+                        'dumbledore': { reason: 'Harry Potter character', points: 6 },
+                        'hogwarts': { reason: 'Harry Potter location', points: 7 }
+                    },
+                    'death': {
+                        'grim reaper': { reason: 'Death personification', points: 6 },
+                        'angel death': { reason: 'Biblical reference', points: 7 }
+                    },
+                    'space': {
+                        'black hole': { reason: 'Astrophysics concept', points: 6 },
+                        'death star': { reason: 'Star Wars reference', points: 7 },
+                        'star trek': { reason: 'Science fiction reference', points: 6 }
+                    },
+                    'tree': {
+                        'yggdrasil': { reason: 'Norse mythology reference', points: 8 },
+                        'world tree': { reason: 'Mythological concept', points: 7 }
+                    },
+                    'weapon': {
+                        'excalibur': { reason: 'Arthurian legend', points: 7 },
+                        'bastard sword': { reason: 'Medieval weaponry', points: 5 }
+                    },
+                    'ocean': { 
+                        'poseidon': { reason: 'Greek mythology reference', points: 6 },
+                        'moby dick': { reason: 'Literary reference', points: 7 }
+                    },
+                    'thunder': { 
+                        'thor': { reason: 'Norse mythology reference', points: 6 },
+                        'zeus': { reason: 'Greek mythology reference', points: 6 }
+                    },
+                    'apple': { 
+                        'newton': { reason: 'Scientific historical reference', points: 6 },
+                        'adam eve': { reason: 'Biblical reference', points: 7 }
+                    }
+                };
+
+                // Check direct references
+                if (references[prev] && references[prev][curr]) {
+                    const ref = references[prev][curr];
+                    return { found: true, reason: ref.reason, points: ref.points };
+                }
+
+                // Check reverse
+                if (references[curr] && references[curr][prev]) {
+                    const ref = references[curr][prev];
+                    return { found: true, reason: ref.reason, points: ref.points };
+                }
+
+                // Check partial matches for multi-word phrases
+                const currWords = curr.split(' ');
+                const prevWords = prev.split(' ');
+                
+                for (const cWord of currWords) {
+                    if (references[prev] && references[prev][cWord]) {
+                        const ref = references[prev][cWord];
+                        return { found: true, reason: ref.reason + ' (partial)', points: ref.points - 1 };
+                    }
+                }
+
+                for (const pWord of prevWords) {
+                    if (references[pWord] && references[pWord][curr]) {
+                        const ref = references[pWord][curr];
+                        return { found: true, reason: ref.reason + ' (partial)', points: ref.points - 1 };
+                    }
+                }
+
+                return { found: false };
+            }
+
+            static checkSemanticConnections(prev, curr) {
+                const semanticMaps = {
+                    'food': ['cuisine', 'gastronomy', 'culinary', 'nourishment', 'sustenance', 'ice cream', 'hot dog', 'apple pie'],
+                    'space': ['cosmos', 'universe', 'celestial', 'interstellar', 'galactic', 'black hole', 'white dwarf', 'neutron star'],
+                    'ocean': ['maritime', 'nautical', 'marine', 'aquatic', 'pelagic', 'moby dick', 'poseidon'],
+                    'weapon': ['sword', 'blade', 'arsenal', 'armament', 'bastard sword', 'excalibur'],
+                    'death': ['mortality', 'demise', 'grim reaper', 'angel death'],
+                    'city': ['urban', 'metropolitan', 'municipal', 'new york', 'los angeles', 'san francisco'],
+                    'transport': ['vehicle', 'locomotive', 'fire engine', 'police car', 'school bus']
+                };
+
+                for (const [key, connections] of Object.entries(semanticMaps)) {
+                    if (prev === key && connections.includes(curr)) {
+                        return { found: true, reason: 'Advanced semantic connection', points: 4 };
+                    }
+                    if (curr === key && connections.includes(prev)) {
+                        return { found: true, reason: 'Advanced semantic connection', points: 4 };
+                    }
+                    
+                    // Check partial word matches
+                    const currWords = curr.split(' ');
+                    const prevWords = prev.split(' ');
+                    
+                    for (const word of currWords) {
+                        if (prev === key && connections.includes(word)) {
+                            return { found: true, reason: 'Semantic connection', points: 3 };
+                        }
+                    }
+                    
+                    for (const word of prevWords) {
+                        if (word === key && connections.includes(curr)) {
+                            return { found: true, reason: 'Semantic connection', points: 3 };
+                        }
+                    }
+                }
+
+                return { found: false };
+            }
+
+            static soundSimilar(word1, word2) {
+                if (word1.length < 3 || word2.length < 3) return false;
+                
+                const end1 = word1.slice(-2);
+                const end2 = word2.slice(-2);
+                
+                return end1 === end2 && word1 !== word2;
+            }
+
+            static validateExplanation(explanation, prevWord, newWord) {
+                if (!explanation || explanation.trim().length < 8) {
+                    return { result: 'accept', reason: 'Brief explanation accepted', points: 2 };
+                }
+
+                const length = explanation.trim().length;
+                const hasKeywords = /reference|connection|meaning|symbol|represent|relate|because|since|like|similar/i.test(explanation);
+                
+                if (length > 50 && hasKeywords) {
+                    return { result: 'accept', reason: 'Detailed creative explanation', points: 7 };
+                } else if (length > 30) {
+                    return { result: 'accept', reason: 'Good creative explanation', points: 5 };
+                } else {
+                    return { result: 'accept', reason: 'Creative connection', points: 3 };
+                }
+            }
+        }
+
+        // Game Functions
+        function startGame(mode) {
+            gameState = {
+                score: 0,
+                currentWord: SEED_WORDS[Math.floor(Math.random() * SEED_WORDS.length)],
+                wordChain: [],
+                comboCount: 0,
+                comboMultiplier: 1,
+                gameMode: mode,
+                timeLeft: 5,
+                timer: null,
+                isGameActive: true,
+                wordsAdded: 0,
+                bestCombo: 1,
+                longestWord: '',
+                geniusCount: 0,
+                pendingConnection: null,
+                useAI: false
+            };
+
+            document.getElementById('titleScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('gameOverScreen').style.display = 'none';
+            document.getElementById('leaderboardSection').style.display = 'none';
+
+            updateDisplay();
+            setupGameMode();
+            generateTrack();
+            
+            document.getElementById('wordInput').focus();
+        }
+
+        function setupGameMode() {
+            if (gameState.gameMode === 'rapid') {
+                document.getElementById('timerDisplay').style.display = 'block';
+                startTimer();
+            } else {
+                document.getElementById('timerDisplay').style.display = 'none';
+            }
+        }
+
+        function startTimer() {
+            if (gameState.timer) clearInterval(gameState.timer);
+            
+            gameState.timeLeft = 5;
+            updateTimer();
+            
+            gameState.timer = setInterval(() => {
+                gameState.timeLeft--;
+                updateTimer();
+                
+                if (gameState.timeLeft <= 0) {
+                    clearInterval(gameState.timer);
+                    // Even timeout gives explanation option now
+                    askForExplanation(document.getElementById('wordInput').value || 'timeout', { reason: 'Time ran out' });
+                }
+            }, 1000);
+        }
+
+        function updateTimer() {
+            document.getElementById('timeLeft').textContent = gameState.timeLeft;
+        }
+
+        async function submitWord() {
+            const input = document.getElementById('wordInput');
+            const newPhrase = input.value.trim();
+            
+            if (!newPhrase || !gameState.isGameActive) return;
+
+            // Clear input immediately
+            input.value = '';
+            
+            // Judge the connection
+            const judgment = await AIJudge.judge(gameState.currentWord, newPhrase);
+            
+            if (judgment.result === 'accept') {
+                // Use the normalized version from validation
+                const validation = validateInput(newPhrase);
+                acceptWord(validation.normalized, judgment);
+            } else if (judgment.result === 'suggest') {
+                showSpellingSuggestions(newPhrase, judgment.suggestions);
+            } else {
+                // Always ask for explanation instead of rejecting
+                askForExplanation(newPhrase, judgment);
+            }
+        }
+
+        function showSpellingSuggestions(originalWord, suggestions) {
+            let feedbackHTML = `<div class="feedback-message suggestion">
+                Did you mean: `;
+            
+            suggestions.forEach(suggestion => {
+                feedbackHTML += `<button class="suggestion-btn" onclick="useSuggestion('${suggestion}')">${suggestion}</button>`;
+            });
+            
+            feedbackHTML += `<br><button class="suggestion-btn" onclick="explainOriginal('${originalWord}')">No, explain "${originalWord}"</button></div>`;
+            
+            document.getElementById('feedbackContainer').innerHTML = feedbackHTML;
+        }
+
+        function useSuggestion(suggestion) {
+            document.getElementById('wordInput').value = suggestion;
+            document.getElementById('feedbackContainer').innerHTML = '';
+            submitWord();
+        }
+
+        function explainOriginal(originalWord) {
+            document.getElementById('feedbackContainer').innerHTML = '';
+            askForExplanation(originalWord, { reason: 'Explain this connection' });
+        }
+
+        function acceptWord(newPhrase, judgment) {
+            // Calculate final points with combo multiplier
+            let finalPoints = Math.floor(judgment.points * gameState.comboMultiplier);
+            
+            // Bonus for multi-word phrases
+            const wordCount = newPhrase.split(' ').length;
+            if (wordCount > 1) {
+                finalPoints += wordCount - 1;
+            }
+            
+            // Update game state
+            gameState.score += finalPoints;
+            gameState.wordChain.push(newPhrase);
+            gameState.currentWord = newPhrase;
+            gameState.wordsAdded++;
+            
+            if (newPhrase.length > gameState.longestWord.length) {
+                gameState.longestWord = newPhrase;
+            }
+
+            // Track genius connections
+            if (judgment.points >= 6) {
+                gameState.geniusCount++;
+            }
+            
+            // Update combo system
+            if (judgment.points >= 3) {
+                gameState.comboCount++;
+                gameState.comboMultiplier = Math.min(4, 1 + (gameState.comboCount * 0.5));
+                if (gameState.comboMultiplier > gameState.bestCombo) {
+                    gameState.bestCombo = gameState.comboMultiplier;
+                }
+            } else {
+                gameState.comboCount = 0;
+                gameState.comboMultiplier = 1;
+            }
+            
+            // Add train car with special styling
+            const isCombo = judgment.points >= 3;
+            const isGenius = judgment.points >= 6;
+            addTrainCar(newPhrase, isCombo, isGenius);
+            
+            // Show success feedback
+            const feedbackClass = judgment.points >= 6 ? 'genius' : 'success';
+            const emoji = judgment.points >= 6 ? '⭐' : judgment.points >= 4 ? '🌟' : '✨';
+            showFeedback(`${emoji} ${judgment.reason}! +${finalPoints} points`, feedbackClass);
+            
+            // Update display
+            updateDisplay();
+            generateTrack();
+            
+            // Restart timer for rapid mode
+            if (gameState.gameMode === 'rapid') {
+                startTimer();
+            }
+            
+            // Focus input for next word
+            document.getElementById('wordInput').focus();
+        }
+
+        function askForExplanation(newPhrase, judgment) {
+            const validation = validateInput(newPhrase);
+            const displayPhrase = validation.valid ? validation.normalized : newPhrase;
+            
+            gameState.pendingConnection = { word: displayPhrase, judgment: judgment };
+            
+            document.getElementById('connectionWords').textContent = `${gameState.currentWord} → ${displayPhrase}`;
+            document.getElementById('explanationInput').value = '';
+            document.getElementById('explanationModal').style.display = 'block';
+            document.getElementById('explanationInput').focus();
+        }
+
+        function submitExplanation() {
+            const explanation = document.getElementById('explanationInput').value.trim();
+            const connection = gameState.pendingConnection;
+            
+            if (!connection) return;
+            
+            // Always accept explanations with varying points
+            const explanationJudgment = AIJudge.validateExplanation(explanation, gameState.currentWord, connection.word);
+            
+            document.getElementById('explanationModal').style.display = 'none';
+            gameState.pendingConnection = null;
+            
+            // Always accept the explanation
+            acceptWord(connection.word, explanationJudgment);
+        }
+
+        function skipExplanation() {
+            const connection = gameState.pendingConnection;
+            document.getElementById('explanationModal').style.display = 'none';
+            gameState.pendingConnection = null;
+            
+            // Accept with minimal points
+            const skipJudgment = { points: 1, reason: 'Connection accepted' };
+            acceptWord(connection.word, skipJudgment);
+        }
+
+        function endGame(reason) {
+            gameState.isGameActive = false;
+            
+            if (gameState.timer) {
+                clearInterval(gameState.timer);
+            }
+            
+            // Show learning complete animation
+            setTimeout(() => {
+                showGameOver();
+                saveScore();
+            }, 1000);
+        }
+
+        function showGameOver() {
+            document.getElementById('finalScore').textContent = gameState.score;
+            document.getElementById('wordsAdded').textContent = gameState.wordsAdded;
+            document.getElementById('bestCombo').textContent = gameState.bestCombo.toFixed(1) + 'x';
+            document.getElementById('longestWord').textContent = gameState.longestWord || 'None';
+            document.getElementById('geniusCount').textContent = gameState.geniusCount;
+            
+            document.getElementById('gameOverScreen').style.display = 'block';
+        }
+
+        function addTrainCar(phrase, isCombo, isGenius) {
+            const trainContainer = document.getElementById('trainContainer');
+            const caboose = trainContainer.querySelector('.train-caboose');
+            
+            const car = document.createElement('div');
+            let carClass = 'train-car';
+            if (isGenius) carClass += ' genius';
+            else if (isCombo) carClass += ' combo';
+            
+            car.className = carClass;
+            
+            // Handle multi-word phrases with smaller text and line breaks
+            const words = phrase.split(' ');
+            if (words.length > 2) {
+                car.style.fontSize = '0.6rem';
+                car.innerHTML = words.join('<br>');
+            } else if (words.length === 2) {
+                car.style.fontSize = '0.65rem';
+                car.innerHTML = words.join('<br>');
+            } else {
+                car.textContent = phrase.length > 8 ? phrase.substring(0, 8) + '…' : phrase;
+            }
+            
+            trainContainer.insertBefore(car, caboose);
+            
+            // Animate train movement
+            const currentCars = trainContainer.querySelectorAll('.train-car').length;
+            if (currentCars > 8) {
+                trainContainer.style.left = (50 - (currentCars - 8) * 30) + 'px';
+            }
+        }
+
+        function generateTrack() {
+            const track = document.getElementById('trainTrack');
+            track.innerHTML = '';
+            
+            const segments = Math.floor(gameState.score / 10);
+            const tunnels = Math.floor(gameState.score / 50);
+            
+            // Add rail segments
+            for (let i = 0; i < segments; i++) {
+                const segment = document.createElement('div');
+                segment.className = 'rail-segment';
+                track.appendChild(segment);
+            }
+            
+            // Add tunnels
+            for (let i = 0; i < tunnels; i++) {
+                const tunnel = document.createElement('div');
+                tunnel.className = 'tunnel';
+                track.appendChild(tunnel);
+            }
+        }
+
+        function switchTracks() {
+            if (gameState.score < 10) {
+                showFeedback('Need 10 points to switch tracks!', 'question');
+                return;
+            }
+            
+            gameState.score -= 10;
+            updateDisplay();
+            
+            // Generate creative hints
+            const hints = [
+                'Try famous characters! (Harry Potter, Luke Skywalker)', 
+                'Think mythology! (Thor, Zeus, Yggdrasil)', 
+                'Scientific terms work great! (Black Hole, Quantum Physics)',
+                'Literary connections = big points! (Moby Dick, Lord Rings)',
+                'Multi-word phrases get bonus points!'
+            ];
+            
+            const randomHint = hints[Math.floor(Math.random() * hints.length)];
+            showFeedback(`💡 Hint: ${randomHint}`, 'question');
+        }
+
+        function showFeedback(message, type) {
+            const container = document.getElementById('feedbackContainer');
+            container.innerHTML = `<div class="feedback-message ${type}">${message}</div>`;
+            
+            // Auto-clear after 5 seconds
+            setTimeout(() => {
+                if (container.innerHTML.includes(message)) {
+                    container.innerHTML = '';
+                }
+            }, 5000);
+        }
+
+        function updateDisplay() {
+            document.getElementById('currentScore').textContent = gameState.score;
+            document.getElementById('comboMultiplier').textContent = gameState.comboMultiplier.toFixed(1) + 'x';
+            document.getElementById('currentWordDisplay').textContent = gameState.currentWord;
+            
+            // Update background based on score
+            const scene = document.getElementById('trainScene');
+            if (gameState.score >= 200) {
+                scene.className = 'train-scene bg-night';
+            } else if (gameState.score >= 100) {
+                scene.className = 'train-scene bg-city';
+            } else {
+                scene.className = 'train-scene bg-day';
+            }
+            
+            // Update switch tracks button
+            const switchBtn = document.getElementById('switchTracksBtn');
+            switchBtn.disabled = gameState.score < 10;
+            switchBtn.textContent = `🔄 Switch Tracks (${gameState.score >= 10 ? '10 pts' : 'Need 10 pts'})`;
+        }
+
+        function newGame() {
+            // Reset train position
+            document.getElementById('trainContainer').style.left = '50px';
+            document.getElementById('trainContainer').style.transform = 'none';
+            
+            // Clear train cars
+            const trainContainer = document.getElementById('trainContainer');
+            const cars = trainContainer.querySelectorAll('.train-car');
+            cars.forEach(car => car.remove());
+            
+            // Start new game
+            startGame(gameState.gameMode);
+        }
+
+        function goHome() {
+            if (gameState.timer) {
+                clearInterval(gameState.timer);
+            }
+            
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('titleScreen').style.display = 'flex';
+        }
+
+        // Leaderboard Functions
+        function saveScore() {
+            if (gameState.score === 0) return;
+            
+            try {
+                const scores = getLeaderboard();
+                scores.push({
+                    score: gameState.score,
+                    words: gameState.wordsAdded,
+                    combo: gameState.bestCombo,
+                    genius: gameState.geniusCount,
+                    longest: gameState.longestWord,
+                    mode: gameState.gameMode,
+                    date: new Date().toLocaleDateString()
+                });
+                
+                scores.sort((a, b) => b.score - a.score);
+                scores.splice(10); // Keep only top 10
+                
+                localStorage.setItem('wordTrainScores', JSON.stringify(scores));
+            } catch (e) {
+                console.log('Could not save score to localStorage');
+            }
+        }
+
+        function getLeaderboard() {
+            try {
+                return JSON.parse(localStorage.getItem('wordTrainScores') || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function showLeaderboard() {
+            const scores = getLeaderboard();
+            const list = document.getElementById('leaderboardList');
+            
+            if (scores.length === 0) {
+                list.innerHTML = '<li class="leaderboard-item"><div><span class="leaderboard-rank">1.</span> No scores yet</div><div class="leaderboard-score">0</div></li>';
+            } else {
+                list.innerHTML = scores.map((score, index) => `
+                    <li class="leaderboard-item">
+                        <div>
+                            <span class="leaderboard-rank">${index + 1}.</span>
+                            ${score.words} phrases (${score.genius || 0} genius)
+                        </div>
+                        <div class="leaderboard-score">${score.score}</div>
+                    </li>
+                `).join('');
+            }
+            
+            document.getElementById('leaderboardSection').style.display = 'block';
+        }
+
+        // Event Listeners
+        document.getElementById('wordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitWord();
+            }
+        });
+
+        document.getElementById('explanationInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitExplanation();
+            }
+        });
+
+        // Close modal when clicking overlay
+        document.getElementById('explanationModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                skipExplanation();
+            }
+        });
+
+        // Initialize game
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('titleScreen').style.display = 'flex';
+        });
+    </script>
+</body>
+</html>
